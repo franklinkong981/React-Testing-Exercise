@@ -15,13 +15,14 @@ it("matches the snapshot of the Carousel component", function() {
 });
 
 
-it("works when you click on the right arrow", function() {
+it("works when you click on the right arrow and the left arrow", function() {
   const { container } = render(
     <Carousel
       photos={TEST_IMAGES}
       title="images for testing"
     />
   );
+
   // expect the first image to show, but not the second
   expect(
     container.querySelector('img[alt="testing image 1"]')
@@ -30,8 +31,13 @@ it("works when you click on the right arrow", function() {
     container.querySelector('img[alt="testing image 2"]')
   ).not.toBeInTheDocument();
 
-  // move forward in the carousel
-  const rightArrow = container.querySelector(".bi-arrow-right-circle");
+  let rightArrow = container.querySelector(".bi-arrow-right-circle");
+  let leftArrow = container.querySelector(".bi-arrow-left-circle");
+
+  //when we are on the first image, the left arrow isn't present.
+  expect(leftArrow).not.toBeInTheDocument();
+
+  //move forward in the carousel
   fireEvent.click(rightArrow);
 
   // expect the second image to show, but not the first
@@ -43,11 +49,23 @@ it("works when you click on the right arrow", function() {
   ).toBeInTheDocument();
 
   //move backward in the carousel
-  const leftArrow = container.querySelector(".bi-arrow-left-circle");
+  leftArrow = container.querySelector(".bi-arrow-left-circle");
   fireEvent.click(leftArrow);
-
   
+  //expect the first image to show, not the second nor third
   expect(container.querySelector('img[alt="testing image 1"]')).toBeInTheDocument();
   expect(container.querySelector('img[alt="testing image 2"]')).not.toBeInTheDocument();
   expect(container.querySelector('img[alt="testing image 3"]')).not.toBeInTheDocument();
+
+  //move to the end of the carousel
+  fireEvent.click(rightArrow);
+  fireEvent.click(rightArrow);
+
+  //expect the third image to show, not the first nor second.
+  expect(container.querySelector('img[alt="testing image 1"]')).not.toBeInTheDocument();
+  expect(container.querySelector('img[alt="testing image 2"]')).not.toBeInTheDocument();
+  expect(container.querySelector('img[alt="testing image 3"]')).toBeInTheDocument();
+
+  //Finally, since we're on the last image, expect the right arrow to not show.
+  expect(rightArrow).not.toBeInTheDocument();
 });
