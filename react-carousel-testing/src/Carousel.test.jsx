@@ -1,7 +1,7 @@
 import { render, fireEvent } from "@testing-library/react";
 import Carousel from "./Carousel";
 import TEST_IMAGES from "./_testCommon.js";
-import { it } from "vitest";
+import { expect, it } from "vitest";
 
 //Smoke test
 it("renders the Carousel component without crashing", () => {
@@ -41,4 +41,13 @@ it("works when you click on the right arrow", function() {
   expect(
     container.querySelector('img[alt="testing image 2"]')
   ).toBeInTheDocument();
+
+  //move backward in the carousel
+  const leftArrow = container.querySelector(".bi-arrow-left-circle");
+  fireEvent.click(leftArrow);
+
+  
+  expect(container.querySelector('img[alt="testing image 1"]')).toBeInTheDocument();
+  expect(container.querySelector('img[alt="testing image 2"]')).not.toBeInTheDocument();
+  expect(container.querySelector('img[alt="testing image 3"]')).not.toBeInTheDocument();
 });
